@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Números Cistercienses</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4a6fa5;
+      --secondary-color: #166088;
+      --accent-color: #4fc3f7;
+      --background-color: #f5f7fa;
+      --card-color: #ffffff;
+      --text-color: #333333;
+      --error-color: #e74c3c;
+      --success-color: #2ecc71;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding: 20px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    h1, h2 {
+      color: var(--secondary-color);
+      margin-bottom: 15px;
+    }
+    
+    .card {
+      background-color: var(--card-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input[type="number"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: var(--secondary-color);
+    }
+    
+    .result-container {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    
+    .result-image {
+      max-width: 100%;
+      height: auto;
+      margin-top: 15px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .success {
+      background-color: rgba(46, 204, 113, 0.1);
+      border-left: 4px solid var(--success-color);
+    }
+    
+    .error {
+      background-color: rgba(231, 76, 60, 0.1);
+      border-left: 4px solid var(--error-color);
+    }
+    
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,.1);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .divider {
+      border: none;
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 40px 0;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px 0;
+      color: #777;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      header {
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Gerador de Números Cistercienses</h1>
+      <p>Converta números arábicos para a representação visual do sistema numeral cisterciense</p>
+    </header>
+    
+    <div class="card">
+      <h2>Gerar Número</h2>
+      <form id="numberForm">
+        <div class="form-group">
+          <label for="numberInput">Digite um número entre 1 e 9999</label>
+          <input type="number" name="number" id="numberInput" min="1" max="9999" placeholder="Ex: 1234" required>
+        </div>
+        <button type="submit" id="generateBtn">
+          <span id="generateText">Gerar Imagem</span>
+        </button>
+      </form>
+      
+      <div id="result" class="result-container" style="display: none;">
+        <h3>Resultado</h3>
+        <div id="resultContent"></div>
+      </div>
+    </div>
+    
+    <hr class="divider">
+    
+    <div class="card">
+      <h2>Reconhecer Número</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="imageInput">Envie uma imagem de um número cisterciense</label>
+          <input type="file" name="image" id="imageInput" accept="image/*" required>
+        </div>
+        <button type="submit" id="uploadBtn">
+          <span id="uploadText">Reconhecer Número</span>
+        </button>
+      </form>
+      
+      <div id="uploadResult" class="result-container" style="display: none;">
+        <h3>Resultado</h3>
+        <div id="uploadResultContent"></div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>Sistema de conversão numérica cisterciense &copy; 2023</p>
+  </footer>
+
+  <script>
+    // Elementos do DOM
+    const numberForm = document.getElementById('numberForm');
+    const uploadForm = document.getElementById('uploadForm');
+    const resultDiv = document.getElementById('result');
+    const resultContent = document.getElementById('resultContent');
+    const uploadResultDiv = document.getElementById('uploadResult');
+    const uploadResultContent = document.getElementById('uploadResultContent');
+    const generateBtn = document.getElementById('generateBtn');
+    const generateText = document.getElementById('generateText');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const uploadText = document.getElementById('uploadText');
+
+    // Gerar número
+    numberForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const number = document.getElementById('numberInput').value;
+      
+      // Mostrar loading
+      generateText.textContent = 'Gerando...';
+      generateBtn.disabled = true;
+
+      try {
+        const response = await fetch('/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number })
+        });
+
+        console.log(JSON.stringify({ number }))
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        const data = await response.json();
+        
+        resultContent.innerHTML = `
+          <p>Número: ${number}</p>
+          <img src="${data.image}" alt="Número cisterciense ${number}" class="result-image">
+          <p class="success">Imagem gerada com sucesso!</p>
+        `;
+        
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'result-container success';
+
+      } catch (error) {
+        resultContent.innerHTML = `
+          <p class="error">Erro: ${error.message || 'Falha ao gerar imagem'}</p>
+        `;
+        resultDiv.style.display = 'block';
+        resultDiv.className = 'result-container error';
+      } finally {
+        generateText.textContent = 'Gerar Imagem';
+        generateBtn.disabled = false;
+      }
+    });
+
+    // Reconhecer número
+    uploadForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('image', e.target.image.files[0]);
+      
+      // Mostrar loading
+      uploadText.textContent = 'Processando...';
+      uploadBtn.disabled = true;
+      
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        const data = await response.json();
+        
+        uploadResultContent.innerHTML = `
+          <p><strong>Número identificado:</strong> ${data.number}</p>
+          <p><strong>Precisão:</strong> ${data.score}%</p>
+          <p class="success">${data.message}</p>
+        `;
+        
+        uploadResultDiv.style.display = 'block';
+        uploadResultDiv.className = 'result-container success';
+
+      } catch (error) {
+        uploadResultContent.innerHTML = `
+          <p class="error">Erro: ${error.message || 'Falha ao processar imagem'}</p>
+        `;
+        uploadResultDiv.style.display = 'block';
+        uploadResultDiv.className = 'result-container error';
+      } finally {
+        uploadText.textContent = 'Reconhecer Número';
+        uploadBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

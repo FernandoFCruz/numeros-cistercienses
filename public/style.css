@@ -1,0 +1,21 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    margin-top: 40px;
+    background-color: #f7f7f7;
+  }
+  
+  form {
+    margin: 20px;
+  }
+  
+  input, button {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  #result img, #uploadResult img {
+    margin-top: 20px;
+    max-height: 300px;
+  }
+  
